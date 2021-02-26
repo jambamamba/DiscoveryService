@@ -105,7 +105,9 @@ void DiscoveryClient::HandleDiscoveryDatagram(DiscoveryData *data, std::string i
         std::cout << "Incompatible discovery message received";
         return;
     }
-    if(strcmp(data->m_name, m_self_id.m_name) == 0 &&
+    if(m_self_id.m_name[0] &&
+            strcmp(data->m_name, m_self_id.m_name) == 0 &&
+            m_self_id.m_serial_number[0] &&
             strcmp(data->m_serial_number, m_self_id.m_serial_number) == 0)
     {
         //message from self to be ignored
