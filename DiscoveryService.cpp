@@ -16,7 +16,7 @@ const char ServerIpFile[] = "/tmp/medussa.ip";
 std::string parseTokenValue(const std::string &line, const std::string &&token)
 {
     std::string str(line);
-    std::string rxstr = token + ":([a-zA-Z0-1]*)";
+    std::string rxstr = token + ":([a-zA-Z0-9-`~!@#$%^&*()[{\\]};'\",.<>\\\\?|\\/]*)";
     std::regex rx(rxstr);
 
     std::smatch matches;
@@ -29,7 +29,7 @@ std::string parseTokenValue(const std::string &line, const std::string &&token)
     }
     return "";
 }
-void readDeviceId(DiscoveryData &data)
+bool readDeviceId(DiscoveryData &data)
 {
     FILE* fp = fopen(DeviceIdFile, "rt");
     if(!fp)
@@ -38,7 +38,7 @@ void readDeviceId(DiscoveryData &data)
                   << ", errno: " << errno
                   << ", " << strerror(errno)
                   << "\n";
-        return;
+        return false;
     }
     char line[128] = {0};
     while(fgets(line, 128, fp))
@@ -58,6 +58,7 @@ void readDeviceId(DiscoveryData &data)
         }
     }
     fclose(fp);
+    return true;
 }
 inline bool fileExists (const std::string& name)
 {
