@@ -20,12 +20,14 @@ set (HEADERS
     DiscoveryClient.h
     DiscoveryService.h
     SimpleUdpSocket.h
+    Utils.h
    )
 
 set (SOURCES
    DiscoveryService.cpp
    DiscoveryClient.cpp
    SimpleUdpSocket.cpp
+   Utils.cpp
    )
 
 add_executable (${EXEPROJ}

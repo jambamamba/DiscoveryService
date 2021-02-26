@@ -4,6 +4,7 @@
 #include <cstring>
 
 #include "DiscoveryClient.h"
+#include "Utils.h"
 
 namespace  {
 
@@ -54,7 +55,7 @@ auto BroadcastIps()
 }//namespace
 
 DiscoveryClient::DiscoveryClient()
-    : UdpSocket(INADDR_ANY,
+    : m_udp_socket(INADDR_ANY,
                 sizeof(DiscoveryData),
                 MAX_QUEUE_SIZE,
                 "DiscoveryService",
@@ -64,11 +65,12 @@ DiscoveryClient::DiscoveryClient()
         })
 {
     std::cout << "ctor ";
+    Utils::ReadDeviceId(m_self_id);
 }
 
 DiscoveryClient::~DiscoveryClient()
 {
-    UdpSocket.Stop();
+    m_udp_socket.Stop();
 }
 
 void DiscoveryClient::Discover()
@@ -77,7 +79,7 @@ void DiscoveryClient::Discover()
     for(auto client : BroadcastIps())
     {
         DiscoveryData data;
-        UdpSocket.SendToClient(client, reinterpret_cast<const char*>(&data));
+        m_udp_socket.SendToClient(client, reinterpret_cast<const char*>(&data));
         std::cout << "Broadcast message to " << inet_ntoa(client.sin_addr)
                                   << ":" << ntohs(client.sin_port);
     }
@@ -98,9 +100,15 @@ void DiscoveryClient::ReadDatagrams(const uint8_t *data, size_t dataLen, const s
 
 void DiscoveryClient::HandleDiscoveryDatagram(DiscoveryData *data, std::string ip, uint16_t port) const
 {
-    if(data->m_version != DiscoveryVersion)
+    if(data->m_version != m_discovery_version)
     {
         std::cout << "Incompatible discovery message received";
+        return;
+    }
+    if(strcmp(data->m_name, m_self_id.m_name) == 0 &&
+            strcmp(data->m_serial_number, m_self_id.m_serial_number) == 0)
+    {
+        //message from self to be ignored
         return;
     }
     std::cout << "Received discovery datagram from "

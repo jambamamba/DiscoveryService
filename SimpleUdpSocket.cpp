@@ -97,7 +97,7 @@ bool ReadFromClient(std::atomic<bool> &killed,
         recvdData.insert(recvdData.end(), buffer.data(), buffer.data() + recsize);
         bytesRecvd += recsize;
     }
-    std::cout << "Received " << bytesRecvd << " bytes of data, " << recvdData.data() << "\n";
+//    std::cout << "Received " << bytesRecvd << " bytes of data\n";
     return true;
 }
 }//namespace
@@ -205,7 +205,7 @@ void SimpleUdpSocket::SimpleUdpSocketThreadProc()
        }
        while((uint32_t)m_buffer.size() >= m_sizeof_datagram)
        {
-           std::cout << "Received datagram from " << inet_ntoa(sa.sin_addr) << ":" << ntohs(sa.sin_port) << "\n";
+//           std::cout << "Received datagram from " << inet_ntoa(sa.sin_addr) << ":" << ntohs(sa.sin_port) << "\n";
            m_receive_from_client_callback(m_buffer.data(), m_sizeof_datagram, sa);
            m_buffer.erase(m_buffer.begin(), m_buffer.begin() + m_sizeof_datagram);
        }
@@ -226,7 +226,7 @@ void SimpleUdpSocket::SendToClient(const sockaddr_in &sa, const char *dataToClie
     }
     else
     {
-        std::cout << "sent datagram to " << inet_ntoa(sa.sin_addr) << ":" << ntohs(sa.sin_port) << "\n";
+//        std::cout << "sent datagram to " << inet_ntoa(sa.sin_addr) << ":" << ntohs(sa.sin_port) << "\n";
     }
 }
 

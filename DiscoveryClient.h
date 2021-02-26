@@ -17,7 +17,8 @@ protected:
     void ReadDatagrams(const uint8_t *dataFromClient, size_t dataLen, const sockaddr_in &sa);
 
 protected:
-    const uint32_t DiscoveryVersion = DiscoveryData::DISCOVERY_VERSION;
-    SimpleUdpSocket UdpSocket;
+    const uint32_t m_discovery_version = DiscoveryData::DISCOVERY_VERSION;
+    SimpleUdpSocket m_udp_socket;
+    DiscoveryData m_self_id;
 };
 
