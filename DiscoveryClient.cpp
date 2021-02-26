@@ -54,8 +54,9 @@ auto BroadcastIps()
 }
 }//namespace
 
-DiscoveryClient::DiscoveryClient()
-    : m_udp_socket(INADDR_ANY,
+DiscoveryClient::DiscoveryClient(std::function<void (DiscoveryData *, std::string, uint16_t)> handleDiscoveryDatagram)
+    : HandleDiscoveryDatagramCb(handleDiscoveryDatagram)
+    , m_udp_socket(INADDR_ANY,
                 sizeof(DiscoveryData),
                 MAX_QUEUE_SIZE,
                 "DiscoveryService",
@@ -119,4 +120,8 @@ void DiscoveryClient::HandleDiscoveryDatagram(DiscoveryData *data, std::string i
              << port
              << ", version:"
              << data->m_version;
+    if(HandleDiscoveryDatagramCb)
+    {
+        HandleDiscoveryDatagramCb(data, ip, port);
+    }
 }

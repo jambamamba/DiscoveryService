@@ -8,16 +8,16 @@
 class DiscoveryClient
 {
 public:
-    DiscoveryClient();
+    DiscoveryClient(std::function<void (DiscoveryData *data, std::string ip, uint16_t port)> handleDiscoveryDatagram = nullptr);
     ~DiscoveryClient();
     void Discover();
 
 protected:
-    void HandleDiscoveryDatagram(DiscoveryData *data, std::string ip, uint16_t port) const;
     void ReadDatagrams(const uint8_t *dataFromClient, size_t dataLen, const sockaddr_in &sa);
+    void HandleDiscoveryDatagram(DiscoveryData *data, std::string ip, uint16_t port) const;
 
-protected:
     const uint32_t m_discovery_version = DiscoveryData::DISCOVERY_VERSION;
+    std::function<void (DiscoveryData *data, std::string ip, uint16_t port)> HandleDiscoveryDatagramCb;
     SimpleUdpSocket m_udp_socket;
     DiscoveryData m_self_id;
 };
