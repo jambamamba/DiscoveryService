@@ -41,7 +41,7 @@ bool InterfaceConnected(int socketfd)
     return false;
 }
 //-------------------------------------------------------------------------------
-bool WaitForClient(int socket, fd_set &socketSet)
+bool WaitForSocketIO(int socket, fd_set &socketSet)
 {
     struct timeval tv;
     InitFileDescriptorSet( tv, socket, &socketSet );
@@ -180,7 +180,7 @@ void SimpleUdpSocket::SimpleUdpSocketThreadProc()
            //restart device
        }
 
-       if(!WaitForClient(m_socket, m_socket_set))
+       if(!WaitForSocketIO(m_socket, m_socket_set))
        {
            continue;
        }

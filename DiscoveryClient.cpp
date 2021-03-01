@@ -82,7 +82,7 @@ void DiscoveryClient::Discover()
         DiscoveryData data;
         m_udp_socket.SendToClient(client, reinterpret_cast<const char*>(&data));
         std::cout << "Broadcast message to " << inet_ntoa(client.sin_addr)
-                                  << ":" << ntohs(client.sin_port);
+                                  << ":" << ntohs(client.sin_port) << "\n";
     }
 }
 
