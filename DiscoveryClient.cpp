@@ -18,7 +18,7 @@ auto BroadcastIps()
     int res = getifaddrs(&addrs);
     if(res == -1)
     {
-        std::cout << "getifaddrs FAILED, errno: " << errno << ", " << strerror(errno);
+//        std::cout << "getifaddrs FAILED, errno: " << errno << ", " << strerror(errno);
         return addresses;
     }
     tmp = addrs;
@@ -27,7 +27,7 @@ auto BroadcastIps()
     {
         if (tmp->ifa_addr && tmp->ifa_addr->sa_family == AF_INET)
         {
-            std::cout << "Interface name: " << tmp->ifa_name;
+//            std::cout << "Interface name: " << tmp->ifa_name;
             struct sockaddr_in *ifa_addr = reinterpret_cast <sockaddr_in *>(tmp->ifa_addr);
             struct sockaddr_in *ifa_netmask = reinterpret_cast <sockaddr_in *>(tmp->ifa_netmask);
 
@@ -36,10 +36,10 @@ auto BroadcastIps()
                 uint32_t broadcastIp = (ifa_addr->sin_addr.s_addr | ~ ifa_netmask->sin_addr.s_addr);
                 struct sockaddr_in ifa_broadcast;
                 ifa_broadcast.sin_addr.s_addr = broadcastIp;
-                std::cout << "Network Inteface: " << tmp->ifa_name
-                                          << ", Address: " << inet_ntoa(ifa_addr->sin_addr)
-                                          << ", Netmast: " << inet_ntoa(ifa_netmask->sin_addr)
-                                          << ", Broadcast Address: " << inet_ntoa(ifa_broadcast.sin_addr);
+//                std::cout << "Network Inteface: " << tmp->ifa_name
+//                                          << ", Address: " << inet_ntoa(ifa_addr->sin_addr)
+//                                          << ", Netmast: " << inet_ntoa(ifa_netmask->sin_addr)
+//                                          << ", Broadcast Address: " << inet_ntoa(ifa_broadcast.sin_addr);
                 ifa_broadcast.sin_port = htons(SERVER_PORT);
                 ifa_broadcast.sin_family = AF_INET;
                 addresses.emplace_back(ifa_broadcast);
@@ -80,8 +80,8 @@ void DiscoveryClient::Discover()
     for(auto client : BroadcastIps())
     {
         m_udp_socket.SendToClient(client, reinterpret_cast<const char*>(&m_self_id));
-        std::cout << "Broadcast message to " << inet_ntoa(client.sin_addr)
-                                  << ":" << ntohs(client.sin_port) << "\n";
+//        std::cout << "Broadcast message to " << inet_ntoa(client.sin_addr)
+//                                  << ":" << ntohs(client.sin_port) << "\n";
     }
 }
 
@@ -113,12 +113,12 @@ void DiscoveryClient::HandleDiscoveryDatagram(DiscoveryData *data, std::string i
         //message from self to be ignored
         return;
     }
-    std::cout << "Received discovery datagram from "
-             << ip
-             << ":"
-             << port
-             << ", version:"
-             << data->m_version;
+//    std::cout << "Received discovery datagram from "
+//             << ip
+//             << ":"
+//             << port
+//             << ", version:"
+//             << data->m_version;
     if(HandleDiscoveryDatagramCb)
     {
         HandleDiscoveryDatagramCb(data, ip, port);
