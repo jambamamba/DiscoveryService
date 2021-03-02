@@ -79,8 +79,7 @@ void DiscoveryClient::Discover()
     std::cout << "Discover";
     for(auto client : BroadcastIps())
     {
-        DiscoveryData data;
-        m_udp_socket.SendToClient(client, reinterpret_cast<const char*>(&data));
+        m_udp_socket.SendToClient(client, reinterpret_cast<const char*>(&m_self_id));
         std::cout << "Broadcast message to " << inet_ntoa(client.sin_addr)
                                   << ":" << ntohs(client.sin_port) << "\n";
     }
