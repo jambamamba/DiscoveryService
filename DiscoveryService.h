@@ -11,7 +11,7 @@ class NetworkServerInterface;
 class DiscoveryService
 {
 public:
-    DiscoveryService();
+    DiscoveryService(const std::string &device_id_file);
     virtual ~DiscoveryService();
 protected:
     void HandleUdpDatagram(const uint8_t *dataFromClient, size_t dataLen, const sockaddr_in &sa);

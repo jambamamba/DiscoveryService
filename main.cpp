@@ -6,8 +6,9 @@
 
 int main(int argc, char** argv)
 {
-    DiscoveryService discovery;
-    DiscoveryClient client;
+    std::string device_id_file("/usr/local/etc/medussa.id");
+    DiscoveryService discovery(device_id_file);
+    DiscoveryClient client(device_id_file);
     while(true)
     {
         client.Discover();

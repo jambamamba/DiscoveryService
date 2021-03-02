@@ -54,7 +54,7 @@ auto BroadcastIps()
 }
 }//namespace
 
-DiscoveryClient::DiscoveryClient(std::function<void (DiscoveryData *, std::string, uint16_t)> handleDiscoveryDatagram)
+DiscoveryClient::DiscoveryClient(const std::string &device_id_file, std::function<void (DiscoveryData *, std::string, uint16_t)> handleDiscoveryDatagram)
     : HandleDiscoveryDatagramCb(handleDiscoveryDatagram)
     , m_udp_socket(INADDR_ANY,
                 sizeof(DiscoveryData),
@@ -66,7 +66,7 @@ DiscoveryClient::DiscoveryClient(std::function<void (DiscoveryData *, std::strin
         })
 {
     std::cout << "ctor ";
-    Utils::ReadDeviceId(m_self_id);
+    Utils::ReadDeviceId(m_self_id, device_id_file);
 }
 
 DiscoveryClient::~DiscoveryClient()

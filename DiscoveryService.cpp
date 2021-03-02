@@ -15,7 +15,7 @@ namespace {
 }//namespace
 
 //-------------------------------------------------------------------------------
-DiscoveryService::DiscoveryService()
+DiscoveryService::DiscoveryService(const std::string &device_id_file)
     : m_udp_socket(SERVER_PORT,
                    sizeof(DiscoveryData),
                    MAX_QUEUE_SIZE,
@@ -25,7 +25,7 @@ DiscoveryService::DiscoveryService()
         HandleUdpDatagram(dataFromClient, dataLen, sa);
     })
 {
-    Utils::ReadDeviceId(m_discover_message);
+    Utils::ReadDeviceId(m_discover_message, device_id_file);
     std::cout << "Device Name: " << m_discover_message.m_name << ", Device Serial Number: " << m_discover_message.m_serial_number << "\n";
 }
 //-------------------------------------------------------------------------------

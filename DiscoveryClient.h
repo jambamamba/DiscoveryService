@@ -8,7 +8,8 @@
 class DiscoveryClient
 {
 public:
-    DiscoveryClient(std::function<void (DiscoveryData *data, std::string ip, uint16_t port)> handleDiscoveryDatagram = nullptr);
+    DiscoveryClient(const std::string &device_id_file,
+                    std::function<void (DiscoveryData *data, std::string ip, uint16_t port)> handleDiscoveryDatagram = nullptr);
     ~DiscoveryClient();
     void Discover();
 

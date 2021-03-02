@@ -6,7 +6,6 @@
 
 #include "DiscoveryData.h"
 
-const char DeviceIdFile[] = "/usr/local/etc/medussa.id";
 const char ServerIpFile[] = "/tmp/medussa.ip";
 
 namespace Utils
@@ -28,12 +27,12 @@ std::string ParseTokenValue(const std::string &line, const std::string &&token)
     }
     return "";
 }
-bool ReadDeviceId(DiscoveryData &data)
+bool ReadDeviceId(DiscoveryData &data, const std::string &device_id_file)
 {
-    FILE* fp = fopen(DeviceIdFile, "rt");
+    FILE* fp = fopen(device_id_file.c_str(), "rt");
     if(!fp)
     {
-        std::cout << "Failed to open " << DeviceIdFile
+        std::cout << "Failed to open " << device_id_file.c_str()
                   << ", errno: " << errno
                   << ", " << strerror(errno)
                   << "\n";
