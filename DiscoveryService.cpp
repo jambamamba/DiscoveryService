@@ -38,8 +38,8 @@ DiscoveryService::~DiscoveryService()
 void DiscoveryService::HandleUdpDatagram(const uint8_t *dataFromClient, size_t dataLen, const sockaddr_in &sa)
 {
     auto msg = reinterpret_cast<const DiscoveryData*>(dataFromClient);
-    std::cout << "Received discovery datagram from " <<
-                                 inet_ntoa(sa.sin_addr) << ":" << ntohs(sa.sin_port) << "\n";
+//    std::cout << "Received discovery datagram from " <<
+//                                 inet_ntoa(sa.sin_addr) << ":" << ntohs(sa.sin_port) << "\n";
     if(msg->m_version != DiscoveryData::DISCOVERY_VERSION)
     {
         std::cout << "Failed: Incompatible Discovery message received\n";

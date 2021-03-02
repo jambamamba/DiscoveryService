@@ -36,7 +36,7 @@ bool InterfaceConnected(int socketfd)
     }
     else
     {
-        std::cout << "error in ioctl call, errno: " << errno << ", " << strerror(errno) << "\n";
+//        std::cout << "error in ioctl call, errno: " << errno << ", " << strerror(errno) << "\n";
     }
     return false;
 }
