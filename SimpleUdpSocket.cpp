@@ -150,6 +150,7 @@ SimpleUdpSocket::SimpleUdpSocket(uint16_t port,
    std::cout << m_service_name << " started on port " << port << "\n";
 
    m_thread = std::async([this](){
+      pthread_setname_np(pthread_self(), "simpleudp");
       SimpleUdpSocketThreadProc();
    });
 }
