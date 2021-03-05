@@ -13,7 +13,7 @@ int main(int argc, char** argv)
     {
         client.Discover();
         std::cout << "Waiting\n";
-        usleep(3 * 1000 * 1000);
+        usleep(2 * 1000 * 1000);
     }
     return 0;
 }
