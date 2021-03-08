@@ -11,6 +11,7 @@ public:
     DiscoveryClient(const std::string &device_id_file,
                     std::function<void (DiscoveryData *data, std::string ip, uint16_t port)> handleDiscoveryDatagram = nullptr);
     ~DiscoveryClient();
+    void UpdateDeviceId(const std::string &device_id_file);
     void Discover();
 
 protected:
@@ -20,6 +21,6 @@ protected:
     const uint32_t m_discovery_version = DiscoveryData::DISCOVERY_VERSION;
     std::function<void (DiscoveryData *data, std::string ip, uint16_t port)> HandleDiscoveryDatagramCb;
     SimpleUdpSocket m_udp_socket;
-    DiscoveryData m_self_id;
+    DiscoveryData m_discover_message;
 };
 

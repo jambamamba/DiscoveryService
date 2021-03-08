@@ -34,6 +34,11 @@ DiscoveryService::~DiscoveryService()
     m_udp_socket.Stop();
     std::cout << "dtor\n";
 }
+
+void DiscoveryService::UpdateDeviceId(const std::string &device_id_file)
+{
+    Utils::ReadDeviceId(m_discover_message, device_id_file);
+}
 //-------------------------------------------------------------------------------
 void DiscoveryService::HandleUdpDatagram(const uint8_t *dataFromClient, size_t dataLen, const sockaddr_in &sa)
 {

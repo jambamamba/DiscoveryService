@@ -13,6 +13,7 @@ class DiscoveryService
 public:
     DiscoveryService(const std::string &device_id_file);
     virtual ~DiscoveryService();
+    void UpdateDeviceId(const std::string &device_id_file);
 protected:
     void HandleUdpDatagram(const uint8_t *dataFromClient, size_t dataLen, const sockaddr_in &sa);
 
