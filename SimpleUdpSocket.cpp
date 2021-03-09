@@ -71,15 +71,15 @@ bool WaitForSocketIO(int socket, fd_set &socketSet)
 //-------------------------------------------------------------------------------
 bool ReadFromClient(std::atomic<bool> &killed,
                     int socket,
-                    struct sockaddr_in &sa,
-                    std::vector<unsigned char> &recvdData)
+                    std::function<void(char* data, size_t sz, struct sockaddr_in sa)> handleRecievedData)
 {
-    ssize_t bytesRecvd = 0;
     constexpr int SOCKET_READ_BUFFER_SIZE = 1024;
     std::array<char, SOCKET_READ_BUFFER_SIZE> buffer;
-    socklen_t fromlen = sizeof(sa);
     while(!killed)
     {
+        struct sockaddr_in sa;
+        memset(&sa, 0, sizeof sa);
+        socklen_t fromlen = sizeof(sa);
         ssize_t recsize = ::recvfrom(socket, (void*)buffer.data(), buffer.size(), 0, (struct sockaddr*)&sa, &fromlen);
         if (recsize < 0)
         {
@@ -94,8 +94,7 @@ bool ReadFromClient(std::atomic<bool> &killed,
         {
             return false;
         }
-        recvdData.insert(recvdData.end(), buffer.data(), buffer.data() + recsize);
-        bytesRecvd += recsize;
+        handleRecievedData(buffer.data(), recsize, sa);
     }
 //    std::cout << "Received " << bytesRecvd << " bytes of data\n";
     return true;
@@ -187,28 +186,33 @@ void SimpleUdpSocket::SimpleUdpSocketThreadProc()
        }
 
        struct sockaddr_in sa;
-       if(!ReadFromClient(m_killed, m_socket, sa, m_buffer))
+       ssize_t bytesRecvd = 0;
+
+       if(!ReadFromClient(m_killed, m_socket, [this,&bytesRecvd](char* data, size_t recsize, struct sockaddr_in sa){
+                          m_buffer.insert(m_buffer.end(), data, data + recsize);
+                          bytesRecvd += recsize;
+
+                          while((uint32_t)m_buffer.size() > 4)
+                          {
+                              unsigned char byte = m_buffer.at(0);
+                              if(m_buffer.at(0) == 0xca &&
+                                      m_buffer.at(1) == 0xfe &&
+                                      m_buffer.at(2) == 0xba &&
+                                      m_buffer.at(3) == 0xbe)
+                              {
+                                  break;
+                              }
+                              m_buffer.erase(m_buffer.begin(), m_buffer.begin() + 1);
+                          }
+                          while((uint32_t)m_buffer.size() >= m_sizeof_datagram)
+                          {
+                   //           std::cout << "Received datagram from " << inet_ntoa(sa.sin_addr) << ":" << ntohs(sa.sin_port) << "\n";
+                              m_receive_from_client_callback(m_buffer.data(), m_sizeof_datagram, sa);
+                              m_buffer.erase(m_buffer.begin(), m_buffer.begin() + m_sizeof_datagram);
+                          }
+       }))
        {
            continue;
-       }
-
-       while((uint32_t)m_buffer.size() > 4)
-       {
-           unsigned char byte = m_buffer.at(0);
-           if(m_buffer.at(0) == 0xca &&
-                   m_buffer.at(1) == 0xfe &&
-                   m_buffer.at(2) == 0xba &&
-                   m_buffer.at(3) == 0xbe)
-           {
-               break;
-           }
-           m_buffer.erase(m_buffer.begin(), m_buffer.begin() + 1);
-       }
-       while((uint32_t)m_buffer.size() >= m_sizeof_datagram)
-       {
-//           std::cout << "Received datagram from " << inet_ntoa(sa.sin_addr) << ":" << ntohs(sa.sin_port) << "\n";
-           m_receive_from_client_callback(m_buffer.data(), m_sizeof_datagram, sa);
-           m_buffer.erase(m_buffer.begin(), m_buffer.begin() + m_sizeof_datagram);
        }
    }
 }

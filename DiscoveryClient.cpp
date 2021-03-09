@@ -54,7 +54,7 @@ auto BroadcastIps()
 }
 }//namespace
 
-DiscoveryClient::DiscoveryClient(const std::string &device_id_file, std::function<void (DiscoveryData *, std::string, uint16_t)> handleDiscoveryDatagram)
+DiscoveryClient::DiscoveryClient(const std::string &device_id_file, std::function<void (DiscoveryData *, uint32_t, uint16_t)> handleDiscoveryDatagram)
     : HandleDiscoveryDatagramCb(handleDiscoveryDatagram)
     , m_udp_socket(INADDR_ANY,
                 sizeof(DiscoveryData),
@@ -96,14 +96,14 @@ void DiscoveryClient::ReadDatagrams(const uint8_t *data, size_t dataLen, const s
     {
         DiscoveryData discoveryData;
         discoveryData = *reinterpret_cast<const DiscoveryData*>(data);
-        HandleDiscoveryDatagram(&discoveryData, inet_ntoa(sa.sin_addr), sa.sin_port);
+        HandleDiscoveryDatagram(&discoveryData, sa.sin_addr.s_addr, sa.sin_port);
 
         dataLen -= sizeof(DiscoveryData);
         data = data + sizeof(DiscoveryData);
     }
 }
 
-void DiscoveryClient::HandleDiscoveryDatagram(DiscoveryData *data, std::string ip, uint16_t port) const
+void DiscoveryClient::HandleDiscoveryDatagram(DiscoveryData *data, uint32_t ip, uint16_t port) const
 {
     if(data->m_version != m_discovery_version)
     {
